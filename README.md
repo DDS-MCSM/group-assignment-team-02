@@ -14,7 +14,8 @@ Brief description of the project.
   
 ### Project Description
 
-Description of the project. 
+El objeto de esta práctica es crear un mapa interactivo de la evolución de ciertos tipos de ransomware en los últimos tres años.
+Se crearán también diversos gráficos comparativos del número de aparaciones de ransomware.
 
 ### Goals
 
