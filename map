@@ -30,5 +30,5 @@ colnames(tidy) <- c("country", "value")
 
 #guide https://www.springboard.com/blog/maps-in-r/
 #
-matched <- joinCountryData2Map(countries.met, joinCode="NAME", nameJoinColumn="country")
-mapCountryData(matched, nameColumnToPlot="value", mapTitle="Met Collection Country Sample", catMethod = "pretty", colourPalette = "heat")
+matched <- joinCountryData2Map(countries.met, joinCode="ISO2", nameJoinColumn="country")
+mapCountryData(matched, nameColumnToPlot="value", mapTitle="Malware", catMethod = "pretty", colourPalette = "heat")
