@@ -1,0 +1,34 @@
+#download csv 
+
+ds <- read.csv(file='https://ransomwaretracker.abuse.ch/feeds/csv/' , skip = 8)
+
+#create a new data by extracting "malware" and "Country" columns that
+
+#clean country column by setting a standard name for each country , for example US,United States = US 
+
+#wget https://ransomwaretracker.abuse.ch/feeds/csv/ -O csv && IFS=$'\n' ; for ((n=0;n<2;n++)); do for i in `cat csv |awk -F '","' '{print $10}' |grep "|" |sed 's/"//g' |sort` ;do  sed -i "s/"$i"/`echo "$i" |cut -d "|" -f1`/g" csv  ; done ; done
+#
+#This shoul dbe done in R but I wasn't able to do it 
+
+#read csv after cleaned by bash command 
+csv <- read.csv(file="csv" ,skip = 8 )
+
+#count countries's occurrences 
+summary(sort(csv$Country))
+
+#bash version
+
+echo "country,count" > countries-count ; cat csv |awk -F '","' '{print $10}' | sort | uniq -c | sed 's/"//g' | awk '{print $2","$1}' >> countries-count
+
+#create dataset from file
+#
+tidy <- read.csv(file="countries-count")
+
+# give name to the column 
+#
+colnames(tidy) <- c("country", "value")
+
+#guide https://www.springboard.com/blog/maps-in-r/
+#
+matched <- joinCountryData2Map(countries.met, joinCode="NAME", nameJoinColumn="country")
+mapCountryData(matched, nameColumnToPlot="value", mapTitle="Met Collection Country Sample", catMethod = "pretty", colourPalette = "heat")
