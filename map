@@ -1,3 +1,6 @@
+#download csv 
+ 
+ds <- read.csv(file='https://ransomwaretracker.abuse.ch/feeds/csv/' , skip = 8)
 
 
 #clean country column by setting a standard name for each country , for example US,United States = US 
@@ -24,4 +27,5 @@ mapCountryData(matched, nameColumnToPlot="value", mapTitle="Ransomware Tracker",
 
 #create a function that will query every single day of the dataset in order to generate a ramsware map based o a specific day this should generate a video 
 
-seq(as.Date("2015/1/1"), as.Date("2018/1/1"), "day")
+for (i in seq(as.Date("2015/1/1"), as.Date("2018/1/1"), by=1)) {  print(paste0(format(date,"%Y-%m-%d")))}
+
