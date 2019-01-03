@@ -15,18 +15,131 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Introducción
+## 1. Introducción
+El objeto de esta práctica es, a partir de los datos entregados en la página web "https://ransomwaretracker.abuse.ch, detectar una tendencia (si la hubiera) de los ransomware más ocurrentes en los últimos tres años.
+Para ello, se decargan los datos facilitados por esta página y se realiza un estudio de los mismos.
+
+### 1.1 Datos
+Los datos que facilita la página web contienen información de las siguientes familias de ransomware:
+
+* TeslaCrypt
+* CryptoWall
+* TorrentLocker
+* PadCrypt 
+* Locky 
+* CTB-Locker 
+* FAKBEN 
+* PayCrypt
+* DMALocker 
+* Cerber
+* Sage
+* GlobeImposter
+
+Para cada uno de estas familias, conseguimos datos sobre, por ejemplo:
+
+* Fecha en la que se añadió
+* Amenaza
+* Host
+* ...
 
 
-```{r cars}
-summary(cars)
+Los datos se nos presentan en formato **.csv**.
+
+
+## 2. Descarga y análisis primario de datos
+
+Descargamos el fichero https://ransomwaretracker.abuse.ch/feeds/csv/.
+
+```{r file_load, error=FALSE, warning=FALSE, message=FALSE}
+source("./R/code.R")
+df <- downloadCSV()
 ```
+
+Mostramos un resumen de los datos sin depurar.
+
+```{r df str}
+str(df)
+
+```
+
+
+```{r df summary}
+summary(df)
+
+```
+
+Eliminamos las columnas que no nos interesan para este estudio, quedando la estructura de la siguiente forma:
+
+```{r df delete columns, echo=FALSE}
+df <- DeleteColumns(df)
+
+```
+
+```{r summary 2}
+summary (df)
+```
+
+Para realizar un primer análisis gráfico necesitamos depurar y arreglar los datos para facilitar su utilización: cambiamos el nombre de la columna que muestra la fecha, separamos las horas y las fechas en dos columnas.
+
+```{r change data}
+df <- changeColumnName(df,"X..Firstseen..UTC.","DateHour")
+df <- separateDate(df)
+
+```
+
+```{r head}
+head (df)
+
+```
+
+Estudiamos la fecha y nos damos cuenta de que disponemos de datos para los años 2015, 2016, 2017 y 2018.
+
+Agrupamos los datos por familia de Malware y ordenamos por orden de ocurrencia.
+
+```{r suma}
+dfsum <- SumColumnsMalwareTotal(df)
+
+```
+```{r suma total, echo=FALSE, results='asis'}
+library(knitr)
+kable(dfsum, caption="Sumatorio Malware")
+```
+
+Como podemos observar, los tres primeros Malware son los más comunes, y con mucha diferencia, en los años de los que se disponen datos (2015-2018). Es por eso que centraremos el análisis en estas tres familias de malware:
+
+* Locky 
+* Cerber
+* TeslaCrypt
+
+Sumamos el resto de ocurrencias de las otras familias y creamos una nueva entrada "Other" con el cálculo realizado.
+
+
+```{r suma parcial}
+dfMax <- SumColumnsMalware(dfsum)
+
+```
+```{r suma parcial 2, echo=FALSE, results='asis'}
+library(knitr)
+kable(dfMax, caption="Sumatorio Malware (máximos)")
+```
+
+### 2.1 Gráfico (pie chart)
+
+Mostramos el porcentaje de ocurrencia de las familias malware mostrados en la tabla anterior de forma gráfica:
+
+```{r pie chart, warning=FALSE, message=FALSE, fig.align="center", out.width='100%', out.height='100%'}
+Plot_pie_Max(dfMax)
+
+
+
+```
+
 
 ## Including Plots
 
 You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
+```{r pressure, echo=FALSE, out.width='150%', out.height='150%'}
 plot(pressure)
 ```
 
