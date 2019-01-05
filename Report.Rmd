@@ -92,8 +92,56 @@ head (df)
 
 ```
 
+
+
 Estudiamos la fecha y nos damos cuenta de que disponemos de datos para los años 2015, 2016, 2017 y 2018.
 
+Presentamos una primera aproximación gráfica de ocurrencia de Malware en los años 2015-2018, a partir de los datos de los que disponemos.
+
+```{r barplot año2015, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Bar_plot_year(df,"2015")
+
+```
+\
+\
+```{r barplot año2016, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Bar_plot_year(df,"2016")
+
+```
+\
+\
+Escalamos el eje y, y visualizamos aquellos Malware con valores inferiores al límite superior:
+\
+```{r barplot año2016 escalado, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Bar_plot_year_scale(df,"2016",200)
+
+```
+\
+\
+```{r barplot año2017, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Bar_plot_year(df,"2017")
+
+```
+\
+\
+Escalamos el eje y, y visualizamos aquellos Malware con valores inferiores al límite superior:
+\
+```{r barplot año2017 escalado, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Bar_plot_year_scale(df,"2017",200)
+
+```
+\
+\
+
+```{r barplot año2018, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Bar_plot_year(df,"2018")
+
+```
+
+\
+\
+
+En un primer vistazo, detectamos que los Malware más ocurrentes en los últimos años son: Cerber, GlobeImposter, TorrentLocker, Locky, TeslaCrypt y CryptoWall.
 Agrupamos los datos por familia de Malware y ordenamos por orden de ocurrencia.
 
 ```{r suma}
@@ -105,7 +153,7 @@ library(knitr)
 kable(dfsum, caption="Sumatorio Malware")
 ```
 
-Como podemos observar, los tres primeros Malware son los más comunes, y con mucha diferencia, en los años de los que se disponen datos (2015-2018). Es por eso que centraremos el análisis en estas tres familias de malware:
+Como podemos observar, del conjunto anterior, los Malware más comunes son los tres primeros Malware de la tabla, y con mucha diferencia, en los años de los que se disponen datos (2015-2018). Es por eso que centraremos el análisis en estas tres familias de malware:
 
 * Locky 
 * Cerber
@@ -123,18 +171,53 @@ library(knitr)
 kable(dfMax, caption="Sumatorio Malware (máximos)")
 ```
 
-### 2.1 Gráfico (pie chart)
+### 2.1 Porcentaje ocurrencias Malware (Pie Chart)
 
-Mostramos el porcentaje de ocurrencia de las familias malware mostrados en la tabla anterior de forma gráfica:
+Mostramos el porcentaje de ocurrencia de las familias malware mostradas en la tabla anterior de forma gráfica:
 
 ```{r pie chart, warning=FALSE, message=FALSE, fig.align="center", out.width='100%', out.height='100%'}
 Plot_pie_Max(dfMax)
 
+```
+\newline
 
+### 2.1 Ocurrencias Malware por semestre (Bar Plot)
+
+Como ya hemos verificado en la gráfica anterior, los Malware *Locky*, *Cerber* y *TeslaCrypt* tienen el mayor porcentaje de ocurrencia entre los años 2015-2018. El porcentaje de la suma del resto de familias es igual que el menor del trío de Malware escogido.
+
+Así pues, confirmamos la elección de la tríada de Malware.
+
+Vamos a analizar ahora la ocurrencia de Malware en los diferentes semestres de los años 2015-2018.
+
+Modificamos nuestra tabla de datos para facilitar la realización de la gráfica. 
+
+```{r semestre, warning=FALSE}
+dfSem <- SemesterColumnsMalwareTotal(df)
+
+```
+```{r semestre 2, echo=FALSE, results='asis'}
+library(knitr)
+kable(dfSem, caption="Sumatorio Malware (semestres)")
+```
+
+En formato gráfico:
+
+```{r barplot semesterLocky, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Bar_plot_semester_Locky(dfSem)
 
 ```
 
 
+```{r barplot semesterCerber, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Bar_plot_semester_Cerber(dfSem)
+
+```
+
+
+```{r barplot semesterTesla, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Bar_plot_semester_Tesla(dfSem)
+
+```
 ## Including Plots
 
 You can also embed plots, for example:
