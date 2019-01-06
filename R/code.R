@@ -82,6 +82,15 @@ changeDateFormat <- function(df,previous,new)
 }
 
 
+#' Delete columns
+#'
+#' This function changes delete some columns of df dataframe:
+#' (Host, URL,Registrar, IPaddress.es, ASN.s)
+#'
+#' @param df
+#' @return Data frame without the deleted columns
+#' @export
+#'
 DeleteColumns <- function(df)
 {
   df[4:5] <- list(NULL)
@@ -90,6 +99,15 @@ DeleteColumns <- function(df)
 }
 
 
+#' Separate date columns
+#'
+#' This function separates the "DateHour" column of the df dataframe into new
+#' columns "Date" and "Hour. The separator must be " "
+#'
+#' @param df
+#' @return Dataframe with the two new columns: "Date" and "Hour"
+#' @export
+#'
 separateDate<-function(df)
 {
   newColNames <- c("Date", "Hour")
@@ -99,6 +117,15 @@ separateDate<-function(df)
 }
 
 
+#' Sum the ocurrences of each Ransomware in 2015-2018
+#'
+#' This function sums the total occurrences during the period between 2015 and 2018, ordering
+#' the result in descending order (by Frequency)
+#'
+#' @param df
+#' @return Dataframe that relates the Malware with their total occurrences
+#' @export
+#'
 SumColumnsMalwareTotal <- function(x)
 {
   df<-data.frame(table(x$Malware),stringsAsFactors=FALSE)
@@ -108,6 +135,18 @@ SumColumnsMalwareTotal <- function(x)
   return(df)
 }
 
+
+#' Percentage of occurrences
+#'
+#' This function selects the first three malware (according to the number of occurrences)
+#' and sums all the occurrences of the other nine malwares in a new row called "Other".
+#' It also calculates the percentage of occurrences.
+#'
+#'
+#' @param df
+#' @return Dataframe showing the highest percentage of occurrences
+#' @export
+#'
 SumColumnsMalware <- function(x)
 {
   dfMax <- x[1:3,]
@@ -138,10 +177,20 @@ SumColumnsMalware <- function(x)
 
 
 
-# Plot Pie Chart
-# Dibuja los tres Malware con más ocurrencias; los otros están integrados en "Other"
+
+#' Percentage of occurrences (Pie Chart)
+#'
+#' This function shows in a graphical way (Pie Chart) the dataframe calculated
+#' by the function SumColumnsMalware (percentage of malware occurrences)
+#'
+#' @param df
+#' @return Pie Chart showing the highest percentage of occurrences
+#' @export
+#'
+
 Plot_pie_Max<-function(x)
 {
+  # Dibuja los tres Malware con más ocurrencias; los otros están integrados en "Other"
   dfMax <- x
   Malware <- dfMax$Malware
 
@@ -161,6 +210,16 @@ Plot_pie_Max<-function(x)
            yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 }
 
+
+#' Malware occurrences per semester (2015-2018)
+#'
+#' This function lists the occurrences of each one of the principal malware (TeslaCrypt,
+#' Cerber and Locky) for each semester during the years between 2015 and 2018
+#'
+#' @param df
+#' @return Dataframe showing the occurrences of each malware (per semester)
+#' @export
+#'
 SemesterColumnsMalwareTotal <- function(x)
 {
   newColNames <- c("Year", "Month", "Day")
@@ -201,7 +260,14 @@ SemesterColumnsMalwareTotal <- function(x)
 
 
 
-
+#' Plot Locky occurrences (per semester)
+#'
+#' This function plots, from the dataframe calculated by the SemesterColumnsMalwareTotal function, the occurrences of Locky per semester (years [2015..2108])
+#'
+#' @param df
+#' @return Bar plot showing the Locky occurrences (per semester)
+#' @export
+#'
 Bar_plot_semester_Locky <- function(x)
 {
   temp_plot <- x
@@ -221,6 +287,14 @@ Bar_plot_semester_Locky <- function(x)
 
 }
 
+#' Plot Ceber occurrences (per semester)
+#'
+#' This function plots, from the dataframe calculated by the SemesterColumnsMalwareTotal function, the occurrences of Ceber per semester (years [2015..2108])
+#'
+#' @param df
+#' @return Bar plot showing the Ceber occurrences (per semester)
+#' @export
+#'
 Bar_plot_semester_Cerber <- function(x)
 {
 
@@ -239,6 +313,14 @@ Bar_plot_semester_Cerber <- function(x)
            title="CERBER")
 }
 
+#' Plot TeslaCrypt occurrences (per semester)
+#'
+#' This function plots, from the dataframe calculated by the SemesterColumnsMalwareTotal function, the occurrences of TeslaCrypt per semester (years [2015..2108])
+#'
+#' @param df
+#' @return Bar plot showing the TeslaCrypt occurrences (per semester)
+#' @export
+#'
 Bar_plot_semester_Tesla <- function(x)
 {
 
@@ -258,6 +340,15 @@ Bar_plot_semester_Tesla <- function(x)
 }
 
 
+#' Plot all the malware occurrences per year
+#'
+#' This function plots the occurrences of all the malware listed in the csv file during
+#'  one year (shown by semester)
+#'
+#' @param df year
+#' @return Bar plot showing the TeslaCrypt occurrences (per semester)
+#' @export
+#'
 Bar_plot_year <- function(x,year)
 {
 
@@ -293,6 +384,15 @@ Bar_plot_year <- function(x,year)
     layout(title = titulo)
 }
 
+#' Plot all the malware occurrences per year (scaled)
+#'
+#' This function plots the occurrences of the malware listed in the csv file during one year
+#' (shown by semester) whose number of occurrences are under the yMax value
+#'
+#' @param df year yMax
+#' @return Bar plot showing the TeslaCrypt occurrences (per semester)
+#' @export
+#'
 Bar_plot_year_scale <- function(x,year,yMax)
 {
 
@@ -332,11 +432,9 @@ Bar_plot_year_scale <- function(x,year,yMax)
 }
 
 
+# Función para pruebas ; eliminar en el package final
 dibjuar <- function()
 {
-
-
-
   x <- rw
   newColNames <- c("Year", "Month", "Day")
   newCols <- colsplit(rw$Date, "-", newColNames)
