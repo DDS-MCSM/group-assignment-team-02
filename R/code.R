@@ -84,7 +84,7 @@ changeDateFormat <- function(df,previous,new)
 
 #' Delete columns
 #'
-#' This function changes delete some columns of df dataframe:
+#' This function deletes some columns of df dataframe:
 #' (Host, URL,Registrar, IPaddress.es, ASN.s)
 #'
 #' @param df
@@ -431,6 +431,66 @@ Bar_plot_year_scale <- function(x,year,yMax)
 
 }
 
+#' Delete columns country
+#'
+#' This function deletes some columns of df dataframe:
+#' (Host, URL,Registrar, IPaddress.es)
+#'
+#' @param df
+#' @return Data frame without the deleted columns
+#' @export
+#'
+DeleteColumnsCountry <- function(df)
+{
+  df[4:9] <- list(NULL)
+  return(df)
+}
+
+CountryMalwareTotal <- function(x,year)
+{
+
+  newColNames <- c("Year", "Month", "Day")
+  newCols <- colsplit(x$Date, "-", newColNames)
+  xaux <- cbind(x, newCols)
+
+  xaux <- filter(xaux, xaux$Year==year)
+
+  a <- xaux$Country
+  a <- strsplit(as.character(a),split='|', fixed=TRUE)
+
+  max.length <- max(sapply(a, length))
+  ## Add NA values to list elements
+  l <- lapply(a, function(v) { c(v, rep(NA, max.length-length(v)))})
+  ## Rbind
+  Country2 <- do.call(rbind, l)
+  Country2 <- Country2[,1]
+  xaux <-cbind(xaux, Country2)
+
+  xaux[1:2] <- list(NULL)
+  xaux[3:4] <- list(NULL)
+  xaux[2] <- list(NULL)
+  xaux[3:4] <- list(NULL)
+
+  xaux <- subset(xaux, Country2!="")
+
+
+  xaux2<-data.frame(table(Malware=as.character(xaux$Malware), Country=xaux$Country2),stringsAsFactors=FALSE)
+  x <- aggregate(xaux2$Freq, by=list(xaux2$Country), sum)
+  colnames(x) <- c("Country","SumMalware")
+
+  pct <- round(x$SumMalware/sum(x$SumMalware)*100,1)
+  dfMax <- cbind(x,pctMax=as.numeric(pct))
+
+  dfMax <- dfMax[order(-dfMax$SumMalware),]
+  dfMax <- dfMax[1:20,]
+
+
+  plot_ly(x =dfMax$pctMax, y = as.character(dfMax$Country), type = 'bar', orientation = 'h')
+
+}
+
+
+
 
 # Función para pruebas ; eliminar en el package final
 dibjuar <- function()
@@ -491,10 +551,14 @@ dibjuar <- function()
 
 }
 
-#df <- downloadCSV()
-#df <- DeleteColumns(df)
-#df <- changeColumnName(df,"X..Firstseen..UTC.","DateHour")
-#df <- separateDate(df)
+df <- downloadCSV()
+df <- DeleteColumnsCountry(df)
+df <- changeColumnName(df,"X..Firstseen..UTC.","DateHour")
+df <- separateDate(df)
+CountryMalwareTotal(df,2015)
+CountryMalwareTotal(df,2016)
+CountryMalwareTotal(df,2017)
+CountryMalwareTotal(df,2018)
 #dfsum <- SumColumnsMalwareTotal(df)
 #dfMax <- SumColumnsMalware(dfsum)
 #dfSem <- SemesterColumnsMalwareTotal(df)
