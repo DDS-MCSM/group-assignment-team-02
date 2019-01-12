@@ -13,7 +13,7 @@ Evolución temporal y comparativa de ransomware en los últimos tres años
   
 ### Project Description
 
-El objeto de esta práctica es crear un mapa interactivo de la evolución de ciertos tipos de ransomware en los últimos tres años.
+El objeto de esta práctica es el estudio de la evolución de ciertos tipos de ransomware en los últimos tres años.
 Se crearán también diversos gráficos comparativos del número de aparaciones de ransomware.
 
 ### Goals

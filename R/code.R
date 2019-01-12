@@ -446,6 +446,14 @@ DeleteColumnsCountry <- function(df)
   return(df)
 }
 
+#' Dataframe by country
+#'
+#' This function arranges a dataframe (malware by country)
+#'
+#' @param df year
+#' @return Dataframe
+#' @export
+#'
 CountryMalwareTotal <- function(x,yearg)
 {
   newColNames <- c("Year", "Month", "Day")
@@ -493,6 +501,16 @@ CountryMalwareTotal <- function(x,yearg)
 
 }
 
+#' Plot all the malware occurrences per country
+#'
+#' This function plots the occurrences of all the malware listed in the csv file per
+#' country
+#'
+#' @param df year
+#' @return Bar plot showing the ranswomware by country
+#' @export
+#'
+
 Plot_bar_horizontal <- function(x,yg)
 {
   f1 <- list(
@@ -521,78 +539,76 @@ Plot_bar_horizontal <- function(x,yg)
 
 }
 
-
-
-
-# Función para pruebas ; eliminar en el package final
-dibjuar <- function()
+Prueba <- function(x,country)
 {
-  x <- rw
+  x <- df
+  country <- "US"
   newColNames <- c("Year", "Month", "Day")
-  newCols <- colsplit(rw$Date, "-", newColNames)
-  a <- semester(xaux$Date, with_year = FALSE)
+  newCols <- colsplit(x$Date, "-", newColNames)
   xaux <- cbind(x, newCols)
-  xaux <- cbind(xaux, Semester=a)
 
-  library(dplyr)
-  temp1 <- filter(xaux, xaux$Malware %in% c("Locky","Cerber","TeslaCrypt"))
 
-  temp_Locky <- filter(temp1, temp1$Malware =="Locky")
-  temp_Cerber <- filter(temp1, temp1$Malware =="Cerber")
-  temp_TeslaCrypt <- filter(temp1, temp1$Malware =="TeslaCrypt")
 
-  library(plyr)
-  temp_TeslaCrypt_1 <-temp_TeslaCrypt[order(-temp_TeslaCrypt$Year, -temp_TeslaCrypt$Semester),]
-  df_Tesla<-data.frame(table(Malware=as.character(temp_TeslaCrypt_1$Malware),Semester=temp_TeslaCrypt_1$Semester,Year=temp_TeslaCrypt_1$Year),stringsAsFactors=FALSE)
+  a <- xaux$Country
+  a <- strsplit(as.character(a),split='|', fixed=TRUE)
 
-  temp_Cerber_1 <-temp_Cerber[order(-temp_Cerber$Year, -temp_Cerber$Semester),]
-  df_Cerber<-data.frame(table(Malware=as.character(temp_Cerber_1$Malware),Semester=temp_Cerber_1$Semester,Year=temp_Cerber_1$Year),stringsAsFactors=FALSE)
+  max.length <- max(sapply(a, length))
+  ## Add NA values to list elements
+  l <- lapply(a, function(v) { c(v, rep(NA, max.length-length(v)))})
+  ## Rbind
+  Country2 <- do.call(rbind, l)
+  Country2 <- Country2[,1]
+  xaux <-cbind(xaux, Country2)
 
-  temp_Locky_1 <-temp_Locky[order(-temp_Locky$Year, -temp_Locky$Semester),]
-  df_Locky<-data.frame(table(Malware=as.character(temp_Locky_1$Malware),Semester=temp_Locky_1$Semester,Year=temp_Locky_1$Year),stringsAsFactors=FALSE)
 
-   #Montamos un único dataframe con los tres parciales
-  temp <- rbind(df_Tesla,df_Cerber)
-  temp <- rbind(temp,df_Locky)
+  xaux[1:2] <- list(NULL)
+  xaux[3:4] <- list(NULL)
+  xaux[2] <- list(NULL)
+  xaux[3:4] <- list(NULL)
 
-  temp <-temp[order(-temp$Year, -temp$Semester),]
 
-  #Unimos las columnas Semester y Year para dibujar
-  library(tidyr)
-  temp_plot<-unite(temp, Date,c(2:3),  sep = "-", remove = FALSE)
+  x<-data.frame(table(Malware=as.character(xaux$Malware), Country=xaux$Country2,Year=xaux$Year), stringsAsFactors=FALSE)
 
-  Malware <- temp_plot$Malware
-  Semestre <- as.character(temp_plot$Date)
-  Semestre <- factor(Semestre, levels=unique(Semestre))
-  Ocurrencias <-temp_plot$Freq
+  colnames(x) <- c("Malware","Country","Year")
 
-  g = ggplot(temp_plot, aes(x=Semestre, y=temp_plot$Freq, fill=Malware) ) +
-    labs(title = "Sin escala")+ylab("") +
-    theme(plot.title = element_text(size = rel(1), colour = "darkblue"))
-  g=g+geom_bar(position="dodge",stat="identity") + scale_fill_manual(values = alpha(c("orange", "blue","red"), 1)) +
-    theme(axis.title.x = element_text(face="bold", size=10))
 
-  g_escalado = ggplot(temp_plot, aes(x=Semestre, y=temp_plot$Freq, fill=Malware) ) +
-    labs(title = "Escalado")+ylab("") +
-    theme(plot.title = element_text(size = rel(1), colour = "darkblue"))
-  g_escalado=g_escalado+geom_bar(position="dodge",stat="identity") + scale_fill_manual(values = alpha(c("orange", "blue","red"), 1)) +
-    theme(axis.title.x = element_text(face="bold", size=10)) + coord_cartesian(ylim = c(0, 1500))
 
-  library(grid)
- grid.arrange(g, g_escalado, nrow=1, ncol=2, top=textGrob("Nº Malware semestres 2015-2018", gp=gpar(col="darkblue",fontface="bold")))
+  row.has.na <- apply(x, 1, function(x){any(is.na(x))})
+  xaux <- x[!row.has.na,]
+
+ # plot_ly(x =x$Year, y = x$MAlware, type = 'bar')
+
+  x <- aggregate(xaux$Freq, by=list(xaux$Malware), sum)
+  x <- filter(x, x$Year=="2016")
+
+  install.packages("rworldmap")
+  library(rworldmap)
+
+  mapped_data <- joinCountryData2Map(dfMax, joinCode = "ISO2",
+                                     nameJoinColumn = "Country")
+  par(mai=c(0,0,0.2,0),xaxs="i",yaxs="i")
+  mapCountryData(mapped_data, nameColumnToPlot = "Malware")
+
+  return(dfMax.filtered)
+
+
+  #plot_ly(x =dfMax$pctMax, y = as.character(dfMax$Country), type = 'bar', orientation = 'h')
 
 }
 
-df <- downloadCSV()
-df <- DeleteColumnsCountry(df)
-df <- changeColumnName(df,"X..Firstseen..UTC.","DateHour")
-df <- separateDate(df)
-df1 <- CountryMalwareTotal(df,"2015")
-Plot_bar_horizontal(df1,"2015")
-df2 <- CountryMalwareTotal(df,"2016")
-Plot_bar_horizontal(df2,"2015")
-CountryMalwareTotal(df,2017)
-CountryMalwareTotal(df,2018)
+
+
+
+#df <- downloadCSV()
+#df <- DeleteColumnsCountry(df)
+#df <- changeColumnName(df,"X..Firstseen..UTC.","DateHour")
+#df <- separateDate(df)
+#df1 <- CountryMalwareTotal(df,"2015")
+#Plot_bar_horizontal(df1,"2015")
+#df2 <- CountryMalwareTotal(df,"2016")
+#Plot_bar_horizontal(df2,"2015")
+#CountryMalwareTotal(df,2017)
+#CountryMalwareTotal(df,2018)
 #dfsum <- SumColumnsMalwareTotal(df)
 #dfMax <- SumColumnsMalware(dfsum)
 #dfSem <- SemesterColumnsMalwareTotal(df)
