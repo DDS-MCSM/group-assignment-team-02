@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 ```
 
 ## 1. Introducción
-El objeto de esta práctica es, a partir de los datos entregados en la página web "https://ransomwaretracker.abuse.ch, detectar una tendencia (si la hubiera) de los ransomware más ocurrentes en los últimos tres años.
+El objeto de esta práctica es, a partir de los datos facilitados por la página web "https://ransomwaretracker.abuse.ch, detectar una tendencia (si la hubiera) de los ransomware más ocurrentes en los últimos tres años.
 Para ello, se decargan los datos facilitados por esta página y se realiza un estudio de los mismos.
 
 
@@ -41,77 +41,93 @@ Los datos que facilita la página web contienen información de las siguientes f
 * Sage
 * GlobeImposter
 
-Para cada uno de estas familias, disponemos de datos sobre, por ejemplo:
+Para cada uno de estas familias, se dispone de los siguientes datos:
 
-* Fecha en la que se añadió a la base de datos
-* Amenaza
+* Firstseen (UTC)
+* Threat
+* Malware
 * Host
-* ...
-
+* URL
+* Status
+* Registrar
+* IP address(es)
+* ASN(s)
+* Country
 
 Los datos se nos presentan en formato **.csv**.
 
 
 ### 1.2 Ransomware
-Ransomware es  un software malicioso que, al infectar un equipo, le da al ciberdelincuente la capacidad de bloquear el mismo desde una ubicación remota y encriptar los archivos quitando al usuario de la máquina el control de toda la información y datos almacenados. El virus lanza una ventana emergente en la que se pide el pago de un rescate; dicho pago se hace generalmente en moneda virtual (bitcoins por ejemplo) .
-Hay decenas de virus secuestradores de equipos. La mayoría actúan de forma idéntica: encriptan archivos y posteriormente piden recompensas. Tan solo hay dos principales diferencias entre ellos: 1) tipo de criptografía usada y; 2) cuantía del rescate. Los métodos de distribución son idénticos también. Los delincuentes propagan el software malicioso de tipo ransomware usando varios: correos basura (adjuntos maliciosos), redes P2P (torrents, eMule, etc.), fuentes de descarga de software de terceros (sitios web de alojamiento de archivos gratuitos, portales de descargas gratuitas, etc.), herramientas falsas de actualización de software y troyanos...
+Ransomware es  un software malicioso que, al infectar un equipo, le da al ciberdelincuente la capacidad de bloquear el mismo desde una ubicación remota y encriptar los archivos quitando al usuario de la máquina el control de toda la información y datos almacenados. El virus lanza una ventana emergente en la que se pide el pago de un rescate; éste se pide generalmente en moneda virtual (bitcoins por ejemplo).
+Hay decenas de virus secuestradores de equipos. La mayoría actúan de forma idéntica: encriptan archivos y posteriormente piden recompensas. Dos principales diferencias entre ellos: tipo de criptografía usada y  cuantía del rescate. 
+\
+Los métodos de distribución son idénticos también. Los delincuentes propagan el software malicioso de tipo ransomware usando: correos basura (adjuntos maliciosos), redes P2P (torrents, eMule, etc.), fuentes de descarga de software de terceros (sitios web de alojamiento de archivos gratuitos, portales de descargas gratuitas, etc.), herramientas falsas de actualización de software y troyanos...
 
 #### 1.2.1 TeslaCrypt
-TeslaCrypt es un tipo de ransomware, detectado por primera vez en Febrero de 2015. Originalmente, afectaba a los jugadores de PC, ya que principalmente infectaba a archivos de juegos, como partidas guardadas, mapas creados por el usuario, perfiles de jugador, etc. Sin embargo, versiones posteriores también buscaban infectar otros tipos de archivos más comunes, como JPEG, Word, PDF, etc.
-TeslaCrypt encripta los archivos del usuario, y muestra un mensaje pidiéndole 500 dólares americanos, a pagar en bitcoins, si quiere recuperar la clave para desencriptar los archivos. 
-En mayo de 2016, los autores de TeslaCrypt publicaron la llave maestra para desencriptar los archivos, y de esta manera, han terminado terminar también (o eso se esparaba) con su negocio de los rescates. Aún así, este malware sigue circulando por internet y todavía puede infectar una máquina.
+TeslaCrypt es un tipo de ransomware, detectado por primera vez en Febrero de 2015. Originalmente, afectaba a los jugadores de PC, ya que principalmente infectaba a archivos de juegos. Sin embargo, versiones posteriores también buscaban infectar otros tipos de archivos más comunes, como JPEG, Word, PDF, etc.
+\
+TeslaCrypt encripta los archivos del usuario, y muestra un mensaje pidiéndole cierta cuantía de dólares americanos, a pagar en bitcoins, si quiere recuperar la clave para desencriptar los archivos. 
+
 
 #### 1.2.2 CryptoWall
-CryptoWall es un virus tipo ransomware (bloqueador de sistemas) que se infiltra en el sistema operativo del usuario a través de un mensaje de email infectado o una descarga fraudulenta, por ejemplo supuestos reproductores de vídeo o actualizaciones de flash. Tras entrar en el sistema con éxito, este programa malicioso encripta los archivos almacenados en el PC del usuario (*.doc, *.docx, *.xls, *.ppt, *.psd, *.pdf, *.eps, *.ai, *.cdr, *.jpg, etc.) y exige el pago de un rescate de 500 dólares (en Bitcoins) para desencriptar los archivos. 
-Los ciberdelincuentes responsables de lanzar este fraudulento programa se aseguraron de que se ejecuta en todas las versiones de Windows (Windows XP, Windows Vista, Windows 7 y Windows 8). El virus ransomware crea los archivos: DECRYPT_INSTRUCTION.txt, DECRYPT_INSTRUCTION.html y DECRYPT_INSTRUCTION.url en todas las carpetas donde haya archivos encriptados.
+CryptoWall es un virus tipo ransomware (bloqueador de sistemas) que se infiltra en el sistema operativo del usuario a través de un mensaje de email infectado o una descarga fraudulenta, por ejemplo supuestos reproductores de vídeo o actualizaciones de flash. Tras entrar en el sistema con éxito, este programa malicioso encripta los archivos almacenados en el PC del usuario (*.doc, *.docx, *.xls, *.ppt, *.psd, *.pdf, *.eps, *.ai, *.cdr, *.jpg, etc.) y exige el pago de un rescate de cierta cuantía dólares (en Bitcoins) para desencriptar los archivos. 
+\
+El virus ransomware crea los archivos: DECRYPT_INSTRUCTION.txt, DECRYPT_INSTRUCTION.html y DECRYPT_INSTRUCTION.url en todas las carpetas donde haya archivos encriptados.
 Esos archivos incluyen instrucciones para que los usuarios puedan desencriptar los archivos, entre ellas, la utilización del navegador Tor (navegador web anónimo). 
 
 #### 1.2.3 TorrentLocker
 Las primeras modificaciones de esta familia se observaron en febrero de 2014 y en diciembre de ese mismo año se descubrieron por lo menos cinco versiones importantes de este malware.
 Utiliza un bloque cipher simétrico AES para cifrar los archivos de la víctima y un cipher asimétrico RSA para cifrar la clave AES. 
+\
 Las versiones recientes de este malware exigen pagos de rescate a través del sistema Bitcoin y alojan sus páginas web de pago en la red Tor.
 
 #### 1.2.4 PadCrypt
 Esta infección utiliza el método de encriptación AES-265 y RSA, para garantizar que los afectados no tengan más remedio que comprar la clave privada.
+\
 PadCrypt ransomware busca archivos con ciertas extensiones de archivo para cifrar, entre ellos archivos como .doc, .docx, .xls, .pdf, entre otros. Cuando se detectan estos archivos, el malware cambiará la extensión a .padcrypt, por lo que ya no se podrán abrir.
-El ransomware PadCrypt se distribuye a través de correo electrónico no deseado que contiene archivos adjuntos infectados o enlaces a sitios web maliciosos. Los cibercriminales envían un mensaje de correo electrónico con información de encabezado falsificada que le hace creer que proviene de una empresa como DHL o FedEx. El correo electrónico dice que se ha intentado entregar un paquete al usuario, pero falló por alguna razón. A veces, los correos electrónicos dicen ser notificaciones de un envío que el usaurip ha realizado. En cualquiera de los dos casos, si se abre el archivo adjunto (o se hace clic en un enlace incrustado dentro del correo electrónico), el ransomware PadCrypt puede infectar el equipo.
+El ransomware PadCrypt se distribuye a través de correo electrónico no deseado que contiene archivos adjuntos infectados o enlaces a sitios web maliciosos.
 
 #### 1.2.5 Locky
 Locky es un virus criptográfico que secuestra los equipos y que se propaga a través de archivos dañinos .doc, .docm o .xls como adjuntos a mensajes SPAM en nuestro correo electrónico. Su fin es cifrar los archivos de la víctima para después exigir un rescate. Un objetivo que logrará creando un archivo BAT y otro más con código VBScript para, finalmente, descargar la amenaza principal.
-Asimismo, estos documentos contienen supuestas macros, que serán ejecutadas en cuanto pinchemos sobre “habilitar contenidos”; momento a partir del cual empezará la infección. El rescate, en esta ocasión, es ligeramente más bajo (ronda los 200 euros).
+\
+Asimismo, estos documentos contienen supuestas macros, que serán ejecutadas en cuanto pinchemos sobre “habilitar contenidos”; momento a partir del cual empezará la infección. El rescate, en esta ocasión, es ligeramente más bajo.
 
 #### 1.2.6 CTB-Locker
 Es una variante internacional del conocido virus-estafa Ransomware Cryptolocker que infecta y bloquea el sistema informático hasta que el usuario no pague el ‘rescate’ exigido.
-Este tipo de malware se propaga a través de botnets e hipervínculos maliciosos compartidos a través de las redes sociales y/o correos electrónicos, principalmente en campañas de correo basura. En esta ocasión, llega en un archivo malicioso adjunto a un correo electrónico en inglés y dice contener un fax.
-Si es capaz de introducirse en el equipo, descarga el ransomwareWin32/FileCoder.DA e infecta el equipo cifrando nuestras imágenes y documentos modificando el fondo de escritorio con ciertas imágenes.
+\
+Este tipo de malware se propaga a través de botnets e hipervínculos maliciosos compartidos a través de las redes sociales y/o correos electrónicos, principalmente en campañas de correo basura. 
 
 #### 1.2.7 FAKBEN
-Más que un programa, Fakben es un servicio que permite a cualquiera -con ciertas habilidades informáticas, claro está- crear un programa de malware.
-Se trata de un modelo por el cual el usuario (que pretende crear el virus) se afilia por una tarifa moderada que le da acceso a una suerte de programa "base" a través de un sitio de red oscura.
-El usuario puede entonces determinar cuánto dinero pedir por el rescate y la dirección donde la persona recibirá el pago (vía bitcoins). El servicio retiene un porcentaje del pago y el afiliado el resto.
-En lo que a la víctima toca, el resto de la historia es conocida. El programa base es un troyano que encripta los archivos del usuario, hasta que pague la suma requerida.
+Más que un programa, Fakben es un servicio que permite a cualquiera -con ciertas habilidades informáticas- crear un programa de malware.
+\
+Se trata de un modelo por el cual el usuario (que pretende crear el virus) se afilia por una tarifa moderada que le da acceso a una suerte de programa "base" a través de un sitio de red oscura.El usuario puede entonces determinar cuánto dinero pedir por el rescate y la dirección donde la persona recibirá el pago (vía bitcoins). El servicio retiene un porcentaje del pago y el afiliado el resto.
+\
+En lo que a la víctima toca, el resto de la historia es conocida. El programa base es un troyano que encripta los archivos del usuario, hasta que se pague la suma requerida.
 
 #### 1.2.8 PayCrypt
-Paycrypt Ransomware es un peligroso virus de rescate creado para bloquear su computadora y denegar el acceso a sus propios archivos. Al igual que otros ransomware, esta amenaza cifrará ciertos archivos en la computadora. También cambia las extensiones de archivo a una desconocida y exige el pago antes de que pueda recuperar el acceso y revertir estos cambios. Exige que el usuario pague una cantidad de Bitcoins.
-Normalmente, el virus Paycrypt ataca a una computadora con la ayuda de otro malware, troyano o virus. Encuentra fallas en el sistema que utilizará como punto de entrada para que el proceso quede oculto para la mayoría de los programas antivirus. De hecho, una vez que Paycrypt Ransomware está dentro de la PC, desactiva instantáneamente cualquier función de seguridad que se ejecute en la computadora de destino.
-Paycrypt Ransomware busca archivos importantes como documentos, hojas de cálculo, imágenes, música y videos. Luego se agregan dos nuevos documentos que dan instrucciones a los usuarios sobre cómo descifrar los archivos afectados. Además, Paycrypt Ransomware bloquea el acceso a ciertos sitios web, especialmente las páginas de seguridad, donde puede descargar herramientas y utilidades que son útiles para limpiar las amenazas de la PC.
+Paycrypt Ransomware es un peligroso virus de rescate creado para bloquear el equipo y denegar el acceso a sus propios archivos. Al igual que otros ransomware, esta amenaza cifrará ciertos archivos en la computadorade la máquina y cambiará las extensiones de archivo a una desconocida, exigiendo el pago antes de que pueda recuperar el acceso y revertir estos cambios.
+\
+Normalmente, el virus Paycrypt ataca al equipo con la ayuda de otro malware, troyano o virus. Encuentra fallas en el sistema que utilizará como punto de entrada para que el proceso quede oculto para la mayoría de los programas antivirus. De hecho, una vez que Paycrypt Ransomware está dentro de la PC, desactiva instantáneamente cualquier función de seguridad que se ejecute en la computadora de destino (como, por ejemplo, conexiones web a páginas de seguridad).
 
 #### 1.2.9 DMALocker
-DMA-Locker es un virus criptográfico que se introduce silenciosamente en el sistema y encripta los datos almacenados posteriormente. Tras encriptarse con éxito, DMA-Locker muestra un mensaje en el que se dice que la víctima debe pagar una suma a cambio de una clave privada que se necesita para desencriptar los archivos.
-La pantalla de bloqueo mostrada contiene toda la información sobre la encriptación y el pago. Se insta a la víctima a pagar una cantidad de bitcoins (BTC) en concepto de rescate; de lo contrario, los archivos encriptados se perderán. Además, se facilitan al usuario instrucciones paso a paso para realizar el pago. Es notorio que la suma del rescate que exigen otros virus criptográficos oscila normalmente entre los 0,5 y 1.5 BTC.El coste del rescate de DMA-Locker es considerablemente elevado con respecto a la suma del rescate que exigen otros virus criptográficos.
+DMA-Locker es un virus criptográfico que se introduce silenciosamente en el sistema y encripta los datos almacenados posteriormente. Tras encriptarse con éxito, DMA-Locker muestra un mensaje en el que se dice a la víctima qued debe pagar una suma a cambio de la clave privada que se necesita para desencriptar los archivos.
+\
+La pantalla de bloqueo mostrada contiene toda la información sobre la encriptación y el pago. Se insta a la víctima a pagar una cantidad de bitcoins (BTC) en concepto de rescate; de lo contrario, los archivos encriptados se perderán. Además, se facilitan al usuario instrucciones paso a paso para realizar el pago. El coste del rescate de DMA-Locker es considerablemente elevado con respecto a la suma del rescate que exigen otros virus criptográficos.
 
 #### 1.2.10 Cerber
 Cerber es un software malicioso de tipo criptográfico que se introduce en el sistema y encripta varios archivos (.jpg, .doc, .raw, .avi etc.) posteriormente (cabe resaltar que Cerber agrega la extensión .cerber (.beef) a cada archivo encriptado). Tras realizarse la encriptación, Cerber exige a los usuarios pagar un rescate para desencriptar esos archivos. Se insta a los usuarios a pagar el rescate dentro de un plazo dado (7 días); de lo contrario, se duplicará la suma del rescate.
-Durante el proceso de encriptación, Cerber crea 3 tipos de archivo diferentes (#DECRYPT MY FILES#.txt, #DECRYPT MY FILES#.html, #DECRYPT MY FILES#.vbs) con instrucciones paso a paso para realizar el pago en cada carpeta que contenga archivos encriptados. En el mensaje, se asegura que los usuarios solo podrán desencriptar los archivos si usan un desencriptador desarrollado por los ciberdelincuentes (llamado 'Cerber Decryptor'). El archivo #DECRYPT MY FILES#.vbs contiene un VBScript que, cuando se ejecuta, reproduce por los altavoces del equipo el mensaje “Your documents, databases and other important files have been encrypted!” (en español, "sus documentos, bases de datos y otros archivos importantes han sido encriptados"). Para descargar el desencriptador, el usuario tiene que pagar un rescate de una cierta cantidad de BitCoins. Si no se paga el rescate en 7 días, el importe se duplica. También se indica a los usuarios que solo pueden realizar el pago desde el navegador Tor y tras seguir las instrucciones proporcionadas en el sitio web. 
+\
+Durante el proceso de encriptación, Cerber crea 3 tipos de archivo diferentes (#DECRYPT MY FILES#.txt, #DECRYPT MY FILES#.html, #DECRYPT MY FILES#.vbs) con instrucciones paso a paso para realizar el pago en cada carpeta que contenga archivos encriptados. En el mensaje, se asegura que los usuarios solo podrán desencriptar los archivos si usan un desencriptador desarrollado por los ciberdelincuentes (llamado 'Cerber Decryptor'). Si no se paga el rescate en 7 días, el importe se duplica. También se indica a los usuarios que solo pueden realizar el pago desde el navegador Tor y tras seguir las instrucciones proporcionadas en el sitio web. 
 
 #### 1.2.11 Sage
 Sage 2.0 se propaga a través de campañas maliciosas de spam, a través de diferentes tipos de archivos (archivos adjuntos de correo electrónico, archivos maliciosos .xls, archivos .htm, archivos .js, archivos .ZIP) cifra los archivos y agrega la extensión de archivo “.sage” con el algoritmo de encriptación AES.
-Para obtener su rescate, el virus de ransomware Sage quiere que el usuario pague una suma elevada de BTC.
+\
+Como en todos los casos, se requiere que el usuario pague una suma elevada de BTC.
 
 #### 1.2.12 GlobeImposter
-GlobeImposter es un virus de tipo criptográfico que imita el comportamiento de Purge (Globe). Tras introducirse en el sistema, GlobeImposter encripta varios archivos y añade la extensión ".hNcrypt", ".medal", ".paycyka", ".2cXpCihgsVxB3", ".vdul", ".keepcalm", ".legally", ".crypt", ".wallet" o ".pizdec" al nombre de cada archivo cifrado. Por ejemplo, el archivo "sample.jpg" pasaría a llamarse "sample.jpg.crypt". Al finalizar el cifrado, GlobeImposter crea un archivo HTA ("HOW_OPEN_FILES.hta") y lo coloca en todas las carpetas que tengan archivos encriptados. Además, GlobeImposter abre una ventana emergente.
-El archivo emergente y HTA contiene un mensaje donde se pide un rescate. Los mensajes son breves en contraste con otros virus de la categoría ransomware y se dice simplemente que los archivos son encriptados y que se debe pagar unr escate de 1 Bitcoin para recuperarlos. Otros virus encriptadores proporcionan información detallada como tipo de algoritmo de encriptación (simétrico/asimétrico) usado, plazo de pago e instrucciones de desencriptación, etc. 
-No es posible desencriptar sin una clave única. Los ciberdelincuentes almacenan esta clave en un servidor remoto y se insta a las víctimas a que paguen por ella. 
+GlobeImposter es un virus de tipo criptográfico que imita el comportamiento de Purge (Globe). Tras introducirse en el sistema, GlobeImposter encripta varios archivos y añade la extensión ".hNcrypt", ".medal", ".paycyka", ".2cXpCihgsVxB3", ".vdul", ".keepcalm", ".legally", ".crypt", ".wallet" o ".pizdec" al nombre de cada archivo cifrado. Al finalizar el cifrado, GlobeImposter crea un archivo HTA ("HOW_OPEN_FILES.hta") y lo coloca en todas las carpetas que tengan archivos encriptados. Además, GlobeImposter abre una ventana emergente.
+\
+El archivo emergente y HTA contiene un mensaje donde se pide un rescate.
 
 
 ## 2. Descarga y análisis de datos
@@ -136,7 +152,7 @@ summary(df)
 
 ```
 
-Eliminamos las columnas que no nos interesan para este estudio, quedando la estructura de la siguiente forma:
+Eliminamos las columnas que no nos interesan para la primera parte de este estudio, quedando la estructura de la siguiente forma:
 
 ```{r df delete columns, echo=FALSE}
 df <- DeleteColumns(df)
@@ -159,7 +175,6 @@ df <- separateDate(df)
 head (df)
 
 ```
-
 
 
 Estudiamos la fecha y nos damos cuenta de que disponemos de datos para los años 2015, 2016, 2017 y 2018.
@@ -221,13 +236,13 @@ library(knitr)
 kable(dfsum, caption="Sumatorio Malware")
 ```
 
-Como podemos observar, del conjunto anterior, los Malware más comunes son los tres primeros Malware de la tabla, y con mucha diferencia, en los años de los que se disponen datos (2015-2018). Es por eso que centraremos el análisis en estas tres familias de malware:
+Como podemos observar, del conjunto anterior, los Malware más comunes son los tres primeros Malware de la tabla, y con mucha diferencia, en los años de los que se disponen datos (2015-2018). Es por eso que centraremos este primer análisis en estas tres familias de malware:
 
 * Locky 
 * Cerber
 * TeslaCrypt
 
-Sumamos el resto de ocurrencias de las otras familias y creamos una nueva entrada "Other" con el cálculo realizado.
+Sumamos el resto de ocurrencias de las otras familias y creamos una nueva entrada "Other" con el cálculo realizado, añadiendo una columna con el porcentaje de ocurrencias.
 
 
 ```{r suma parcial}
@@ -241,7 +256,7 @@ kable(dfMax, caption="Sumatorio Malware (máximos)")
 
 ### 2.1 Porcentaje ocurrencias Malware (Pie Chart)
 
-Mostramos el porcentaje de ocurrencia de las familias malware mostradas en la tabla anterior de forma gráfica:
+Mostramos el porcentaje de ocurrencia de las familias malware de la tabla anterior de forma gráfica:
 
 ```{r pie chart, warning=FALSE, message=FALSE, fig.align="center", out.width='100%', out.height='100%'}
 Plot_pie_Max(dfMax)
@@ -287,7 +302,89 @@ Bar_plot_semester_Tesla(dfSem)
 
 ```
 
+### 2.3 Análisis por geolocalización
+
+Como en el análisis anterior, modficamos nuestra estructura de dataframe hasta lograr los datos depurados que necesitaremos para hacer el análisis por geolocalización.
+
+```{r geo, echo=FALSE }
+dfg <- downloadCSV()
+dfg <- DeleteColumnsCountry(dfg)
+dfg <- changeColumnName(dfg,"X..Firstseen..UTC.","DateHour")
+dfg <- separateDate(dfg)
+
+```
+```{r geo2}
+str(dfg)
+
+```
+```{r geo3}
+head(dfg)
+
+```
+\
+Calculamos el porcentaje de ocurrencias por país y por año y presentamos gráficamente los mayores porcentajes:
+
+```{r geo4, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+df1 <- CountryMalwareTotal(df,"2015")
+
+```
+```{r geo5, echo=FALSE,warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+print(df1)
+
+```
+```{r geo6, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Plot_bar_horizontal(df1,"2015")
+
+```
+\
+\
+```{r geo7, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+df2 <- CountryMalwareTotal(df,"2016")
+
+```
+```{r geo8, echo=FALSE,warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+print(df2)
+
+```
+```{r geo9, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Plot_bar_horizontal(df2,"2016")
+
+```
+\
+\
+```{r geo10, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+df3 <- CountryMalwareTotal(df,"2017")
+
+```
+```{r geo11, echo=FALSE,warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+print(df3)
+
+```
+```{r geo12, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Plot_bar_horizontal(df3,"2017")
+
+```
+\
+\
+```{r geo13, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+df4 <- CountryMalwareTotal(df,"2018")
+
+```
+```{r geo14, echo=FALSE,warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+print(df4)
+
+```
+```{r geo15, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
+Plot_bar_horizontal(df4,"2018")
+
+```
 
 ## 3. Conclusiones
+Se ha podido comprobrar cuáles son, en función de la fecha y en función de la localización, cuáles son los malware con más ocurrencia entre los años 2015 y 2018.
+\
+Sin embargo, los datos en los que nos hemos basado son datos parciales y consideramos que no son lo suficientemente amplios.
+\
+Creemos que, aparte de la información básica que nos proporciona el *.csv* descargado, otra información habría sido útil para hacer un analisis más detallado. Por ejemplo, en el archivo se nos muestra la fecha de primera visualización de malware (fecha en la que se introdujo en la base de datos); sin embargo no se muestra la fecha de la ultima visualización.
+Además, solo se disponen de datos hasta mediados del 2018, con lo cual cualquier análisis que se realice es posible que ya no aplique a la actualidad.
 
 

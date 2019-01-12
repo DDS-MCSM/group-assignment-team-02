@@ -446,14 +446,13 @@ DeleteColumnsCountry <- function(df)
   return(df)
 }
 
-CountryMalwareTotal <- function(x,year)
+CountryMalwareTotal <- function(x,yearg)
 {
-
   newColNames <- c("Year", "Month", "Day")
   newCols <- colsplit(x$Date, "-", newColNames)
   xaux <- cbind(x, newCols)
 
-  xaux <- filter(xaux, xaux$Year==year)
+  xaux <- filter(xaux, xaux$Year==yearg)
 
   a <- xaux$Country
   a <- strsplit(as.character(a),split='|', fixed=TRUE)
@@ -483,9 +482,42 @@ CountryMalwareTotal <- function(x,year)
 
   dfMax <- dfMax[order(-dfMax$SumMalware),]
   dfMax <- dfMax[1:20,]
+  row.has.na <- apply(dfMax, 1, function(x){any(is.na(x))})
+  dfMax.filtered <- dfMax[!row.has.na,]
+  dfMax.filtered <- dfMax.filtered[order(dfMax.filtered$pctMax),]
+
+  return(dfMax.filtered)
 
 
-  plot_ly(x =dfMax$pctMax, y = as.character(dfMax$Country), type = 'bar', orientation = 'h')
+  #plot_ly(x =dfMax$pctMax, y = as.character(dfMax$Country), type = 'bar', orientation = 'h')
+
+}
+
+Plot_bar_horizontal <- function(x,yg)
+{
+  f1 <- list(
+    family = "Arial, sans-serif",
+    size = 18,
+    color = "orange"
+  )
+  b <- list(
+    title = "PAIS",
+    titlefont = f1
+  )
+  a <- list(
+    title = "PORCENTAJE",
+    titlefont = f1
+  )
+
+  xform <- list(categoryorder = "array",
+                categoryarray = as.character(x$Country))
+
+  temp.Grade <- as.vector(x$Country) #get rid of factors
+  temp.Grade = factor(temp.Grade,temp.Grade) #add ordered factors back
+
+  plot_ly(x =x$pctMax, y = temp.Grade, type = 'bar', orientation = 'h') %>%
+    layout(xaxis = a, yaxis = b, showlegend = FALSE, xaxis = xform)%>%
+    layout(title = paste('MALWARE ', yg ,sep = " "))
 
 }
 
@@ -555,8 +587,10 @@ df <- downloadCSV()
 df <- DeleteColumnsCountry(df)
 df <- changeColumnName(df,"X..Firstseen..UTC.","DateHour")
 df <- separateDate(df)
-CountryMalwareTotal(df,2015)
-CountryMalwareTotal(df,2016)
+df1 <- CountryMalwareTotal(df,"2015")
+Plot_bar_horizontal(df1,"2015")
+df2 <- CountryMalwareTotal(df,"2016")
+Plot_bar_horizontal(df2,"2015")
 CountryMalwareTotal(df,2017)
 CountryMalwareTotal(df,2018)
 #dfsum <- SumColumnsMalwareTotal(df)
