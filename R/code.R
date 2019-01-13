@@ -636,12 +636,16 @@ MapMalwareYear <- function(x,ygcountry)
 
 }
 
-
+ds <- read.csv(file='https://ransomwaretracker.abuse.ch/feeds/csv/' , skip = 8)
+#change date column name from "X..Firstseen..UTC." to "date"
+colnames(ds)[which(names(ds) == "X..Firstseen..UTC.")] <- "date"
+#change date format from '%Y-%m-%d %H:%M:%S' to '%Y' just by year
+ds$date  <- format(as.POSIXct(ds$date,format='%Y-%m-%d %H:%M:%S'),format='%Y')
+#clean country column
+ds$Country <- str_split_fixed(ds$Country, "|", 1)
 # crate dataframe value for the map
-
-vlue <- as.data.frame(table(ds[ds$date == "2015",10]))
-
-#create map function
+value <- as.data.frame(table(ds[ds$date == "2015",10]))
+#create map function, the map will use the dataframe called value
 
 
 GetMapYear <- function(value) {
