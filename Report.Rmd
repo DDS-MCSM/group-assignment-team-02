@@ -386,7 +386,7 @@ Vemos, a partir de las gráficas que el país más afectado por estos ransomware
 
 
 ## 3. Conclusiones
-Se ha podido comprobrar cuáles son, en función de la fecha y en función de la localización, cuáles son los malware con más ocurrencia entre los años 2015 y 2018.
+Se ha podido comprobrar cuáles son, en función de la fecha y en función de la localización, los malware con más ocurrencia entre los años 2015 y 2018.
 \
 Sin embargo, los datos en los que nos hemos basado son datos parciales y consideramos que no son lo suficientemente amplios.
 \
