@@ -380,10 +380,11 @@ Plot_bar_horizontal(df4,"2018")
 ```
 \
 \
+
 Vemos, a partir de las gráficas que el país más afectado por estos ransomware en los tres años es US y, en los años 2016 y 2017 los tres primeros países afectados son los mismos (US,RU).
 
 
-\
+
 ## 3. Conclusiones
 Se ha podido comprobrar cuáles son, en función de la fecha y en función de la localización, cuáles son los malware con más ocurrencia entre los años 2015 y 2018.
 \
