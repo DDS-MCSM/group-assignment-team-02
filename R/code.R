@@ -31,7 +31,10 @@ if (!require(grid)) (install.packages("grid"))
 library(grid)
 if (!require(gridExtra)) (install.packages("gridExtra"))
 library(gridExtra)
-
+if (!require(rworldmap)) (install.packages("rworldmap"))
+library(rworldmap)
+if (!require(data.table)) (install.packages("data.table"))
+library(data.table)
 
 #' Read CSV
 #'
@@ -539,19 +542,23 @@ Plot_bar_horizontal <- function(x,yg)
 
 }
 
-Prueba <- function(x,country)
+#' Plot all the malware occurrences in a map
+#'
+#' This function plots the occurrences of all the malware listed in the csv file in a
+#' world map
+#'
+#' @param df year
+#' @return Map showing the ranswomware by year
+#' @export
+#'
+MapMalwareYear <- function(x,ygcountry)
 {
-  x <- df
-  country <- "US"
   newColNames <- c("Year", "Month", "Day")
   newCols <- colsplit(x$Date, "-", newColNames)
   xaux <- cbind(x, newCols)
 
-
-
   a <- xaux$Country
   a <- strsplit(as.character(a),split='|', fixed=TRUE)
-
   max.length <- max(sapply(a, length))
   ## Add NA values to list elements
   l <- lapply(a, function(v) { c(v, rep(NA, max.length-length(v)))})
@@ -560,43 +567,74 @@ Prueba <- function(x,country)
   Country2 <- Country2[,1]
   xaux <-cbind(xaux, Country2)
 
-
   xaux[1:2] <- list(NULL)
   xaux[3:4] <- list(NULL)
   xaux[2] <- list(NULL)
   xaux[3:4] <- list(NULL)
 
+  colnames(xaux) <- c("Malware","Year","Country")
+  xaux1<-data.frame(table(Malware=as.character(xaux$Malware), Country=xaux$Country,Year=xaux$Year), stringsAsFactors=FALSE)
+  p1 <- xaux1
+  p2 <- subset(xaux1,Freq>0)
+  y <- "2015"
+  #p3 <- subset(p2, Year=="2015")
+  p3 <- subset(p2,Year==ygcountry)
 
-  x<-data.frame(table(Malware=as.character(xaux$Malware), Country=xaux$Country2,Year=xaux$Year), stringsAsFactors=FALSE)
+  p4 <- as.data.table(p3)[, sum(Freq), by = .(Country)]
+  columnName <- paste("Malware", ygcountry, sep=" ")
+  colnames(p4) <- c("Country",columnName)
+  countries <- as.character(p4$Country)
+  p5 <- cbind(p4,countries)
 
-  colnames(x) <- c("Malware","Country","Year")
+  library( ggmap)
+  library(countrycode)
+  r <- countrycode(p5$countries, 'iso2c', 'country.name')
+  p6 <- cbind(p5,r)
+  names(p5)[2] <- "suma"
+
+  l <- list(color = toRGB("white"), width = 2)
+  # specify some map projection/options
+  g <- list(
+    scope = 'world'
+
+  )
+  library(plotly)
+
+  p <- plot_geo(p6, locationmode = 'world') %>%
+    add_trace(
+      z = ~suma, text = ~suma, locations = ~countries,
+      color = ~suma, colors = 'Purples'
+    ) %>%
+    colorbar(title = "Millions USD") %>%
+    layout(
+      title = '2011 US Agriculture Exports by State<br>(Hover for breakdown)',
+      geo = g
+    )
 
 
+  #wMap <- joinCountryData2Map(p5,nameJoinColumn="countries",joinCode="ISO2")
 
-  row.has.na <- apply(x, 1, function(x){any(is.na(x))})
-  xaux <- x[!row.has.na,]
+  colourPalettee=RColorBrewer::brewer.pal(10,'Spectral')
 
- # plot_ly(x =x$Year, y = x$MAlware, type = 'bar')
+#mapCountryData(wMap, nameColumnToPlot = columnName,catMethod = 'fixedWidth', colourPalette = colourPalettee, numCats = 10,addLegend = FALSE)
+  library(tidyverse)
+  library(rvest)
+  library(magrittr)
+  library(ggmap)
+  library(stringr)
+  library(viridisLite)
+  map.world <- map_data("world", add = TRUE)
+  names(p6)[4] <- "region"
 
-  x <- aggregate(xaux$Freq, by=list(xaux$Malware), sum)
-  x <- filter(x, x$Year=="2016")
+  p6$region <- recode(p6$region,'United States' = 'USA','United Kingdom' = 'UK')
+  stateData <- merge(p6,map.world,by="region")
+  names(stateData)[3] <- "suma"
+  library(ggthemes)
 
-  install.packages("rworldmap")
-  library(rworldmap)
+  ggplot()+geom_polygon(data=stateData,aes(x=long, y=lat, group = group, fill=suma),color="black")+coord_map()
 
-  mapped_data <- joinCountryData2Map(dfMax, joinCode = "ISO2",
-                                     nameJoinColumn = "Country")
-  par(mai=c(0,0,0.2,0),xaxs="i",yaxs="i")
-  mapCountryData(mapped_data, nameColumnToPlot = "Malware")
-
-  return(dfMax.filtered)
-
-
-  #plot_ly(x =dfMax$pctMax, y = as.character(dfMax$Country), type = 'bar', orientation = 'h')
 
 }
-
-
 
 
 #df <- downloadCSV()

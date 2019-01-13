@@ -338,6 +338,7 @@ Plot_bar_horizontal(df1,"2015")
 ```
 \
 \
+
 ```{r geo7, warning=FALSE, message=FALSE, fig.align="center",out.width='100%', out.height='100%'}
 df2 <- CountryMalwareTotal(df,"2016")
 
@@ -381,7 +382,8 @@ Plot_bar_horizontal(df4,"2018")
 \
 \
 
-Vemos, a partir de las gráficas que el país más afectado por estos ransomware en los tres años es US y, en los años 2016 y 2017 los tres primeros países afectados son los mismos (US,RU).
+Vemos, a partir de las gráficas que el país más afectado por estos ransomware en los tres años es US y, en los años 2016 y 2017 los dos primeros países afectados son los mismos (US,RU).
+En estos dos países, el malware con más ocurrencia en estos tres años ha sido:
 
 
 
