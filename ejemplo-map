@@ -1,0 +1,10 @@
+country <- c('BG','US','RU')
+value <- c('10','100','1000')
+tidy <- data.frame(country,value)
+
+#guide https://www.springboard.com/blog/maps-in-r/
+install.packages("rworldmap")
+library(rworldmap)
+
+matched <- joinCountryData2Map(tidy, joinCode="ISO2", nameJoinColumn="country")
+mapCountryData(matched, nameColumnToPlot="value", mapTitle="Ransomware Tracker", catMethod=c(1,5,10,20,30,40,50,60,70,90,150,200,300,400,500,600,3000,3500) , colourPalette = "heat")
