@@ -637,6 +637,25 @@ MapMalwareYear <- function(x,ygcountry)
 }
 
 
+#create map function
+
+
+GetMapYear <- function(value) {
+  matched <- joinCountryData2Map(value, joinCode="ISO2", nameJoinColumn="Var1")
+  mapCountryData(matched, nameColumnToPlot="Freq", mapTitle="Ransomware Tracker", catMethod=c(1,5,10,20,30,40,50,60,70,90,150,200,300,400,500,600,3000,3500) , colourPalette = "heat")
+
+  return(value)
+
+}
+
+
+
+# crate dataframe value for the map
+
+vlue <- as.data.frame(table(ds[ds$date == "2015",10]))
+
+
+
 #df <- downloadCSV()
 #df <- DeleteColumnsCountry(df)
 #df <- changeColumnName(df,"X..Firstseen..UTC.","DateHour")
